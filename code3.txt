@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Node {
+    string name;
+    vector<Node*> children;
+
+    Node(string n) : name(n) {}
+};
+
+Node* insert(Node* parent, string name) {
+    Node* newNode = new Node(name);
+    parent->children.push_back(newNode);
+    return newNode;
+}
+
+void printTree(Node* root, int depth = 0) {
+    if (!root) return;
+
+    for (int i = 0; i < depth; i++)
+        cout << "    ";  
+    cout << "- " << root->name << endl;
+
+    for (Node* child : root->children)
+        printTree(child, depth + 1);
+}
+
+int main() {
+    string bookName, chapterName, sectionName, subsectionName;
+    int numChapters, numSections, numSubsections;
+
+    cout << "Enter Book Name: ";
+    getline(cin, bookName);
+    Node* book = new Node(bookName);
+
+    cout << "Enter number of chapters: ";
+    cin >> numChapters;
+    cin.ignore();
+
+    for (int i = 0; i < numChapters; i++) {
+        cout << "Enter name of Chapter " << i + 1 << ": ";
+        getline(cin, chapterName);
+        Node* chapter = insert(book, chapterName);
+
+        cout << "Enter number of sections in Chapter " << chapterName << ": ";
+        cin >> numSections;
+        cin.ignore();
+
+        for (int j = 0; j < numSections; j++) {
+            cout << "Enter name of Section " << j + 1 << ": ";
+            getline(cin, sectionName);
+            Node* section = insert(chapter, sectionName);
+
+            cout << "Enter number of subsections in Section " << sectionName << ": ";
+            cin >> numSubsections;
+            cin.ignore();
+
+            for (int k = 0; k < numSubsections; k++) {
+                cout << "Enter name of Subsection " << k + 1 << ": ";
+                getline(cin, subsectionName);
+                insert(section, subsectionName);
+            }
+        }
+    }
+
+    cout << "\nBook Structure:\n";
+    printTree(book);
+
+    return 0;
+}
